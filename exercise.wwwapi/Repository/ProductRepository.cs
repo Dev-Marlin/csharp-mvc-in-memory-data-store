@@ -21,7 +21,7 @@ namespace exercise.wwwapi.Repository
         }
         public async Task<IEnumerable<Product>> GetAllByCategory(string category)
         {
-            return await db.Products.ToListAsync();
+            return await db.Products.Where(x => x.Category.Equals(category)).ToListAsync();
         }
         public async Task<Product> AddProduct(Product prod)
         {

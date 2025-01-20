@@ -1,4 +1,5 @@
 using exercise.wwwapi.Data;
+using exercise.wwwapi.Endpoints;
 using exercise.wwwapi.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.ConfigureProductEndpoints();
 
 app.Run();
 
