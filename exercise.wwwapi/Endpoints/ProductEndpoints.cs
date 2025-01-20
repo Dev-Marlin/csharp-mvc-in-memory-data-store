@@ -10,7 +10,7 @@ namespace exercise.wwwapi.Endpoints
     {
         public static void ConfigureProductEndpoints(this WebApplication app)
         {
-            var prod = app.MapGroup("/products");
+            var prod = app.MapGroup("products");
 
             prod.MapGet("/getbyid/{id}", GetProductById);
 
@@ -27,9 +27,9 @@ namespace exercise.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> GetProductById(IRepository repository, int id)
         {
-            var prodById = repository.GetProductById(id);
+            Product prodById = await repository.GetProductById(id);
 
-            if (prodById != null)
+            if (prodById == null)
             {
                 return TypedResults.NotFound($"Product by id {id} do not exist");
             }
@@ -41,9 +41,9 @@ namespace exercise.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> GetAllByCategory(IRepository repository, string category)
         {
-            var all = repository.GetAllByCategory(category);
+            IEnumerable<Product> all = await repository.GetAllByCategory(category);
 
-            if (all != null)
+            if (all == null)
             {
                 return TypedResults.NotFound($"Product by category {category} do not exist");
             }
@@ -55,12 +55,12 @@ namespace exercise.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public static async Task<IResult> AddProduct(IRepository repository, Product prod)
         {
-            if (repository.GetProductById(prod.Id) != null)
+            /*if (repository.GetProductById(prod.Id) != null)
                 return TypedResults.BadRequest($"Product with the name {prod.Name} do already exist");
+            */
 
-
-            var temp = repository.AddProduct(prod);
-            return TypedResults.Ok(temp);
+            var temp = await repository.AddProduct(prod);
+            return TypedResults.Created("",prod);
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -68,7 +68,7 @@ namespace exercise.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> UpdateProduct(IRepository repository, int id, ProductPut pp)
         {
-            var temp = repository.UpdateProduct(id, pp);
+            var temp = await repository.UpdateProduct(id, pp);
             return TypedResults.Ok(temp);
         }
 
@@ -76,7 +76,7 @@ namespace exercise.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> DeleteProduct(IRepository repository, int id)
         {
-            var temp = repository.DeleteProduct(id);
+            var temp = await repository.DeleteProduct(id);
             return TypedResults.Ok(temp);
         }
     }
